@@ -25,6 +25,4 @@ player.read(buffer);
 npm run test
 ```
 
----
-
-[^1] Some data structures cannot be supported like arbitrary functions or circular data structures.
+[^1]: Some data structures cannot be supported like arbitrary functions or circular data structures.
