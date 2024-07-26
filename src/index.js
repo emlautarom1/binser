@@ -59,3 +59,26 @@ export function array(length, type) {
     }
   }
 }
+
+export function union(variants) {
+  let size = 0;
+  for (const [_, v] of Object.entries(variants)) {
+    size = Math.max(size, v.size);
+  }
+  size += 1;
+
+  return {
+    size,
+    read: (buffer, offset = 0) => {
+      const discriminator = uint8.read(buffer, offset);
+      const type = Object.keys(variants)[discriminator];
+      return { [type]: variants[type].read(buffer, offset + 1) };
+    },
+    write: (buffer, value, offset = 0) => {
+      const type = Object.keys(value)[0];
+      const discriminator = Object.keys(variants).indexOf(type);
+      uint8.write(buffer, discriminator, offset);
+      variants[type].write(buffer, value[type], offset + 1);
+    }
+  }
+}
